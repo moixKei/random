@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjeta de Cumpleaños</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffe6f0, #f8d7ff, #d6e4ff);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 20px 15px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      animation: fadeIn 2s ease-in;
+      width: 100%;
+      max-width: 95%;
+      margin: 0 auto;
+      padding: 20px 15px;
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+    }
+
+    h1 {
+      color: #d63384;
+      font-size: 2.2em;
+      margin: 15px 0 10px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      animation: pulse 2s infinite;
+    }
+
+    p {
+      color: #5a5a5a;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      line-height: 1.5;
+      padding: 0 5px;
+    }
+
+    .cake-container {
+      margin: 15px auto;
+      width: 160px;
+    }
+
+    .cake {
+      position: relative;
+      margin: 0 auto;
+      width: 140px;
+      height: 170px;
+      cursor: pointer;
+    }
+
+    .layer {
+      width: 140px;
+      height: 40px;
+      background: #ff99cc;
+      border-radius: 8px;
+      margin: 6px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .layer-bottom { 
+      background: linear-gradient(to bottom, #ff66b2, #ff99cc);
+      width: 150px;
+    }
+    
+    .layer-middle { 
+      background: linear-gradient(to bottom, #ff85c1, #ffb3d9);
+      width: 130px;
+    }
+    
+    .layer-top { 
+      background: linear-gradient(to bottom, #ffcce6, #ffe6f2);
+      width: 110px;
+    }
+
+    .decoration {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff3366;
+      animation: glitter 2s infinite;
+    }
+
+    .decoration:nth-child(1) { top: 12px; left: 25px; animation-delay: 0.2s; }
+    .decoration:nth-child(2) { top: 12px; right: 25px; animation-delay: 0.4s; }
+    .decoration:nth-child(3) { top: 52px; left: 18px; animation-delay: 0.6s; }
+    .decoration:nth-child(4) { top: 52px; right: 18px; animation-delay: 0.8s; }
+    .decoration:nth-child(5) { top: 92px; left: 20px; animation-delay: 1s; }
+    .decoration:nth-child(6) { top: 92px; right: 20px; animation-delay: 1.2s; }
+
+    .candle {
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 35px;
+      background: linear-gradient(to right, #ffd700, #ffaa00, #ffd700);
+      border-radius: 6px 6px 3px 3px;
+      z-index: 5;
+    }
+
+    .flame {
+      width: 14px;
+      height: 14px;
+      background: radial-gradient(ellipse at center, #ffff00, #ffa500 60%, #ff4500);
+      border-radius: 50% 50% 20% 20%;
+      position: absolute;
+      top: -18px;
+      left: -1px;
+      animation: flicker 0.8s infinite alternate;
+      transform-origin: center bottom;
+    }
+
+    .message {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.95));
+      padding: 15px 12px;
+      border-radius: 12px;
+      margin: 20px auto;
+      max-width: 90%;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .age-counter {
+      font-size: 2.8em;
+      font-weight: bold;
+      color: #d63384;
+      margin: 15px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+      position: relative;
+      display: inline-block;
+    }
+
+    .age-counter::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(to right, #d63384, #ff6b6b, #d63384);
+      border-radius: 2px;
+    }
+
+    .btn {
+      background: linear-gradient(to right, #d63384, #ff6b6b);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 12px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(214, 51, 132, 0.35);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 5px rgba(214, 51, 132, 0.4);
+    }
+
+    .signature {
+      margin-top: 20px;
+      font-style: italic;
+      color: #d63384;
+      font-weight: 500;
+    }
+
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0.9;
+      animation: fall linear forwards;
+    }
+
+    /* Animaciones simplificadas */
+    @keyframes flicker {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes glitter {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.85); }
+    }
+
+    /* Media queries para móviles más pequeños */
+    @media (max-width: 380px) {
+      h1 {
+        font-size: 1.9em;
+      }
+      
+      .cake-container {
+        width: 140px;
+      }
+      
+      .cake {
+        width: 120px;
+        height: 150px;
+      }
+      
+      .layer {
+        width: 120px;
+        height: 35px;
+      }
+      
+      .layer-bottom { width: 130px; }
+      .layer-middle { width: 115px; }
+      .layer-top { width: 100px; }
+      
+      .age-counter {
+        font-size: 2.4em;
+      }
+      
+      p {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti-container" id="confettiContainer"></div>
+  
+  <div class="card" id="birthdayCard">
+    <div class="cake-container">
+      <div class="cake" id="cake">
+        <div class="layer layer-bottom"></div>
+        <div class="decoration"></div>
+        <div class="decoration"></div>
+        <div class="layer layer-middle"></div>
+        <div class="decoration"></div>
+        <div class="decoration"></div>
+        <div class="layer layer-top"></div>
+        <div class="decoration"></div>
+        <div class="decoration"></div>
+        <div class="candle">
+          <div class="flame" id="flame"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="age-counter" id="ageCounter">40</div>
+    
+    <h1>¡Feliz 40 cumpleaños!</h1>
+    
+    <div class="message" id="message">
+      <p>Que este nuevo año esté lleno de amor, alegría y momentos inolvidables 🎉</p>
+    </div>
+    
+    <button class="btn" id="surpriseBtn">¡Sorpréndeme!</button>
+    <button class="btn" id="confettiBtn">¡Lanzar Confeti!</button>
+    
+    <div class="signature">
+      <p>Con cariño,<br><span id="senderName">Tus seres queridos</span></p>
+    </div>
+  </div>
+
+  <script>
+    // Detectar si es un dispositivo móvil
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    // Elementos de la tarjeta
+    const confettiContainer = document.getElementById('confettiContainer');
+    const flame = document.getElementById('flame');
+    let flickerInterval;
+    
+    // Animación de la vela
+    function startFlameAnimation() {
+      flickerInterval = setInterval(() => {
+        const scale = 0.9 + Math.random() * 0.3;
+        flame.style.transform = `scale(${scale})`;
+      }, 100);
+    }
+    
+    function stopFlameAnimation() {
+      clearInterval(flickerInterval);
+      flame.style.transform = 'scale(1)';
+    }
+    
+    // Crear confeti optimizado
+    function createConfetti() {
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900'];
+      const confettiCount = isMobile ? 40 : 60;
+      
+      // Limpiar contenedor de confeti
+      confettiContainer.innerHTML = '';
+      
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        
+        // Posición aleatoria
+        confetti.style.left = Math.random() * 100 + 'vw';
+        
+        // Color aleatorio
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Tamaño aleatorio
+        const size = 5 + Math.random() * 10;
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        
+        // Forma aleatoria
+        if (Math.random() > 0.5) {
+          confetti.style.borderRadius = '50%';
+        }
+        
+        // Animación con duración y delay aleatorios
+        confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        
+        confettiContainer.appendChild(confetti);
+        
+        // Eliminar el confeti después de la animación
+        setTimeout(() => {
+          if (confetti.parentNode) {
+            confetti.remove();
+          }
+        }, 5000);
+      }
+    }
+    
+    // Animación del contador de edad
+    function animateAgeCounter() {
+      const ageCounter = document.getElementById('ageCounter');
+      let age = 0;
+      const targetAge = 40;
+      const duration = 2000;
+      const steps = 50;
+      const increment = targetAge / steps;
+      const stepTime = duration / steps;
+      
+      const timer = setInterval(() => {
+        age += increment;
+        if (age >= targetAge) {
+          age = targetAge;
+          clearInterval(timer);
+          ageCounter.style.color = '#ff6b6b';
+          setTimeout(() => {
+            ageCounter.style.color = '#d63384';
+          }, 500);
+        }
+        ageCounter.textContent = Math.round(age);
+      }, stepTime);
+    }
+    
+    // Cambiar mensaje
+    const messages = [
+      "Que este nuevo año esté lleno de amor, alegría y momentos inolvidables 🎉",
+      "Los 40 son los nuevos 30 ¡Disfruta al máximo! 🥳",
+      "Que todos tus deseos se hagan realidad ✨",
+      "La vida comienza a los 40 🎊",
+      "¡Felicidades por llegar a esta maravillosa edad! 🎂",
+      "Cumplir 40 es como subir a la cima de una montaña 🏔️",
+      "A los 40 se tiene la experiencia de lo vivido y la ilusión de lo por vivir 🌟",
+      "40 años son solo el comienzo de lo mejor 🚀"
+    ];
+    
+    let messageIndex = 0;
+    
+    function changeMessage() {
+      const messageElement = document.getElementById('message').querySelector('p');
+      messageIndex = (messageIndex + 1) % messages.length;
+      
+      // Efecto de fade out e fade in
+      messageElement.style.opacity = 0;
+      setTimeout(() => {
+        messageElement.textContent = messages[messageIndex];
+        messageElement.style.opacity = 1;
+      }, 300);
+    }
+    
+    // Efecto de soplar velas
+    function blowCandles() {
+      stopFlameAnimation();
+      flame.style.display = 'none';
+      createConfetti();
+      
+      // Mostrar mensaje especial
+      const messageElement = document.getElementById('message').querySelector('p');
+      messageElement.style.opacity = 0;
+      setTimeout(() => {
+        messageElement.textContent = "¡Las velas están soplando! ¡Todos tus deseos se harán realidad! 🌟";
+        messageElement.style.opacity = 1;
+      }, 300);
+      
+      // Reactivar la vela después de 5 segundos
+      setTimeout(() => {
+        flame.style.display = 'block';
+        startFlameAnimation();
+      }, 5000);
+    }
+    
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      startFlameAnimation();
+      animateAgeCounter();
+      
+      // Event listeners para los botones
+      const surpriseBtn = document.getElementById('surpriseBtn');
+      const confettiBtn = document.getElementById('confettiBtn');
+      const cake = document.getElementById('cake');
+      
+      // Usar eventos táctiles para móviles y clics para desktop
+      const eventType = isMobile ? 'touchstart' : 'click';
+      
+      surpriseBtn.addEventListener(eventType, function(e) {
+        if (isMobile) e.preventDefault();
+        changeMessage();
+      });
+      
+      confettiBtn.addEventListener(eventType, function(e) {
+        if (isMobile) e.preventDefault();
+        createConfetti();
+      });
+      
+      cake.addEventListener(eventType, function(e) {
+        if (isMobile) e.preventDefault();
+        blowCandles();
+      });
+    });
+  </script>
+</body>
+</html>
