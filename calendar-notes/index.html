@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario de Notas</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1><i class="fas fa-calendar-alt"></i> Mi Calendario de Notas</h1>
+      <p class="subtitle">Organiza tus pensamientos día a día</p>
+    </header>
+
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <div class="month-nav">
+          <button id="prevYear" class="nav-btn" title="Año anterior">
+            <i class="fas fa-angle-double-left"></i>
+          </button>
+          <button id="prevMonth" class="nav-btn" title="Mes anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="month-display">
+            <h2 id="currentMonth">Febrero 2026</h2>
+            <button id="todayBtn" class="today-btn">Hoy</button>
+          </div>
+          <button id="nextMonth" class="nav-btn" title="Mes siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <button id="nextYear" class="nav-btn" title="Año siguiente">
+            <i class="fas fa-angle-double-right"></i>
+          </button>
+        </div>
+
+        <div class="calendar-controls">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchNotes" placeholder="Buscar en notas...">
+            <button id="clearSearch" class="clear-search hidden">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="view-actions">
+            <button id="exportNotes" class="action-btn" title="Exportar notas">
+              <i class="fas fa-download"></i>
+            </button>
+            <button id="importNotes" class="action-btn" title="Importar notas">
+              <i class="fas fa-upload"></i>
+            </button>
+            <input type="file" id="importFile" accept=".json" class="hidden">
+          </div>
+        </div>
+      </div>
+
+      <div class="weekdays">
+        <div class="weekday">Lun</div>
+        <div class="weekday">Mar</div>
+        <div class="weekday">Mié</div>
+        <div class="weekday">Jue</div>
+        <div class="weekday">Vie</div>
+        <div class="weekday">Sáb</div>
+        <div class="weekday">Dom</div>
+      </div>
+
+      <div id="calendar" class="calendar-grid"></div>
+
+      <div class="stats">
+        <div class="stat-item">
+          <i class="fas fa-sticky-note"></i>
+          <span id="totalNotes">0</span> notas
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-calendar-day"></i>
+          <span id="daysWithNotes">0</span> días con notas
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-tags"></i>
+          <span id="tagCount">0</span> etiquetas
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3><i class="fas fa-tags"></i> Etiquetas</h3>
+        <button id="addTagBtn" class="add-btn">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+      <div id="tagsList" class="tags-list">
+      </div>
+
+      <div class="month-summary">
+        <h3><i class="fas fa-chart-pie"></i> Resumen del Mes</h3>
+        <div id="monthSummary">
+          <p class="empty-summary">No hay notas este mes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="noteModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalDate">Fecha</h3>
+        <div class="tag-selector">
+          <span>Etiqueta:</span>
+          <select id="noteTag">
+            <option value="">Sin etiqueta</option>
+          </select>
+          <button id="newTagBtn" class="small-btn">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="format-toolbar">
+        <button class="format-btn" data-command="bold" title="Negrita">
+          <i class="fas fa-bold"></i>
+        </button>
+        <button class="format-btn" data-command="italic" title="Cursiva">
+          <i class="fas fa-italic"></i>
+        </button>
+        <button class="format-btn" data-command="insertUnorderedList" title="Lista">
+          <i class="fas fa-list-ul"></i>
+        </button>
+        <button class="format-btn" data-command="formatBlock" data-value="blockquote" title="Cita">
+          <i class="fas fa-quote-right"></i>
+        </button>
+      </div>
+
+      <div class="note-editor">
+        <div id="noteText" contenteditable="true" placeholder="Escribe tu nota aquí..."></div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="saveNote" class="btn-primary">
+          <i class="fas fa-save"></i> Guardar
+        </button>
+        <button id="deleteNote" class="btn-danger">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+        <button id="closeModal" class="btn-secondary">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Nueva Etiqueta -->
+  <div id="tagModal" class="modal hidden">
+    <div class="modal-content small-modal">
+      <div class="modal-header">
+        <h3>Nueva Etiqueta</h3>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="tagName" placeholder="Nombre de la etiqueta" maxlength="20">
+        <div class="color-picker">
+          <span>Color:</span>
+          <div class="color-options">
+            <div class="color-option" data-color="#FF6B6B" style="background-color: #FF6B6B;"></div>
+            <div class="color-option" data-color="#4ECDC4" style="background-color: #4ECDC4;"></div>
+            <div class="color-option" data-color="#FFD166" style="background-color: #FFD166;"></div>
+            <div class="color-option" data-color="#06D6A0" style="background-color: #06D6A0;"></div>
+            <div class="color-option" data-color="#118AB2" style="background-color: #118AB2;"></div>
+            <div class="color-option" data-color="#9D4EDD" style="background-color: #9D4EDD;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="saveTag" class="btn-primary">Crear Etiqueta</button>
+        <button id="closeTagModal" class="btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalOverlay" class="overlay hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
